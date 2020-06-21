@@ -105,7 +105,7 @@ class DB {
     });
   }
 
-  // department list
+  // select department list
   deplist() {
     let alldep = [];
     return new Promise((resolve, reject) => {
@@ -121,6 +121,27 @@ class DB {
           return reject(err);
         }
         resolve(alldep);
+      });
+    });
+  }
+
+  // select roles
+
+  rolelist() {
+    let allrole = [];
+    return new Promise((resolve, reject) => {
+      this.connection.query("SELECT * FROM role", (err, data) => {
+        // console.log(answer);
+        for (let i = 0; i < data.length; i++) {
+          let roles = data[i].roleid + " " + data[i].title;
+          allrole.push(roles);
+        }
+
+        if (err) {
+          console.log(err);
+          return reject(err);
+        }
+        resolve(allrole);
       });
     });
   }

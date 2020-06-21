@@ -146,21 +146,20 @@ const view_all_emp = async () => {
 
 const upd_emp_role = async () => {
   let allemp = [];
-  let role = [
-    "Sales Lead",
-    "Sales person",
-    "Lead Engineer",
-    "Software Engineer",
-    "Account Manager",
-    "Accountant",
-    "Legal Team Lead",
-    "Lawyer",
-  ];
+
+  let role = [];
 
   await database.emplist().then(async (response) => {
     console.log(response.length);
     for (let i = 0; i < response.length; i++) {
       allemp.push(response[i]);
+    }
+  });
+
+  await database.rolelist().then(async (response) => {
+    console.log(response.length);
+    for (let i = 0; i < response.length; i++) {
+      role.push(response[i]);
     }
   });
 
@@ -183,36 +182,11 @@ const upd_emp_role = async () => {
     ])
     .then(async (answers) => {
       console.log("about to update", answers);
+
       const idToUpdate = {};
       idToUpdate.employeeId = parseInt(answers.updateEmpRole.split(" ")[0]);
-      // console.log(idToUpdate);
+      idToUpdate.role_id = parseInt(answers.newrole.split(" ")[0]);
 
-      switch (answers.newrole) {
-        case "Sales Lead":
-          idToUpdate.role_id = 1;
-          break;
-        case "Sales person":
-          idToUpdate.role_id = 2;
-          break;
-        case "Lawyer":
-          idToUpdate.role_id = 3;
-          break;
-        case "Lead Engineer":
-          idToUpdate.role_id = 4;
-          break;
-        case "Software Engineer":
-          idToUpdate.role_id = 5;
-          break;
-        case "Account Manager":
-          idToUpdate.role_id = 6;
-          break;
-        case "Accountant":
-          idToUpdate.role_id = 7;
-          break;
-        case "Legal Team Lead":
-          idToUpdate.role_id = 8;
-          break;
-      }
       console.log(answers.newrole);
       console.log(idToUpdate.role_id, "+", idToUpdate.employeeId);
 
