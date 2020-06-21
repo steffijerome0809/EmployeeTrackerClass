@@ -108,21 +108,33 @@ const view_emp_by_dep = async () => {
     });
 };
 
-function view_emp_by_manager() {
+const view_emp_by_manager = async () => {
+  let managerlist = [];
+  await database.emplist().then(async (response) => {
+    for (let i = 0; i < response.length; i++) {
+      managerlist.push(response[i]);
+    }
+  });
+
   inquirer
     .prompt({
-      type: "input",
+      type: "list",
       name: "managername",
       message: "Name the manager whose employees you want to view ?",
+      choices: managerlist,
     })
     .then(async (answers) => {
-      await database.viewEmpByManager(answers.managername).then((response) => {
-        console.table(response);
-      });
+      let managerparseName = {};
+      managerparseName.name = answers.managername.split(" ")[1];
+      await database
+        .viewEmpByManager(managerparseName.name)
+        .then((response) => {
+          console.table(response);
+        });
 
       startQue();
     });
-}
+};
 
 const view_all_emp = async () => {
   await database.viewAllEmp().then((response) => {
