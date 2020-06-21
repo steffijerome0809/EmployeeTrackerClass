@@ -21,6 +21,7 @@ const startQue = () => {
         "update employee role",
         "update employee manager",
         "remove employee",
+        "total_salary_of_department",
       ],
     })
     .then((answers) => {
@@ -55,6 +56,9 @@ const startQue = () => {
         case "remove employee":
           remove_emp();
           break;
+        case "total_salary_of_department":
+          total_salary_dep();
+          break;
       }
     });
 };
@@ -76,6 +80,33 @@ const addDepartment = () => {
     });
 };
 
+const total_salary_dep = async () => {
+  let alldep = [];
+
+  await database.deplist().then(async (response) => {
+    console.log(response.length);
+    for (let i = 0; i < response.length; i++) {
+      alldep.push(response[i]);
+    }
+  });
+  inquirer
+    .prompt({
+      type: "list",
+      name: "departmentname",
+      message: "Select the department to view the total salary ?",
+      choices: alldep,
+    })
+    .then(async (answers) => {
+      let depparseName = {};
+      depparseName.name = answers.departmentname.split(" ")[1];
+
+      await database.totsalarydep(depparseName.name).then((response) => {
+        console.table(response);
+      });
+
+      startQue();
+    });
+};
 const view_emp_by_dep = async () => {
   let alldep = [];
   //   select e.first_name as firstname ,e.last_name as lastname from employee e ,role r join department d on r.department_id=d.id where d.name="Sales";

@@ -105,6 +105,26 @@ class DB {
     });
   }
 
+  // select total salary of a department
+
+  totsalarydep(deptname) {
+    return new Promise((resolve, reject) => {
+      var query =
+        "select sum(r.salary) as TotalSalary,d.name as Department from employee e join employee em on e.empid=em.manager_id";
+      query +=
+        " join role r on r.roleid=em.role_id join department d on d.id=r.department_id where  d.name=?";
+
+      console.log(query);
+      this.connection.query(query, deptname, function (err, data) {
+        if (err) {
+          console.log(err);
+          return reject(err);
+        }
+        resolve(data);
+      });
+    });
+  }
+
   // select department list
   deplist() {
     let alldep = [];
