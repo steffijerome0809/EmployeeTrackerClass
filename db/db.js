@@ -84,6 +84,7 @@ class DB {
     });
   }
 
+  // select employee list
   emplist() {
     let allemp = [];
     return new Promise((resolve, reject) => {
@@ -100,6 +101,26 @@ class DB {
           return reject(err);
         }
         resolve(allemp);
+      });
+    });
+  }
+
+  // department list
+  deplist() {
+    let alldep = [];
+    return new Promise((resolve, reject) => {
+      this.connection.query("SELECT * FROM department", (err, data) => {
+        // console.log(answer);
+        for (let i = 0; i < data.length; i++) {
+          let departments = data[i].id + " " + data[i].name;
+          alldep.push(departments);
+        }
+
+        if (err) {
+          console.log(err);
+          return reject(err);
+        }
+        resolve(alldep);
       });
     });
   }
@@ -141,10 +162,27 @@ class DB {
     });
   }
 
+  upd_manager(emp_id, manager_id) {
+    return new Promise((resolve, reject) => {
+      this.connection.query(
+        "UPDATE employee SET manager_id = ? WHERE empid = ?",
+        [manager_id, emp_id],
+        function (err, data) {
+          if (err) {
+            console.log(err);
+            return reject(err);
+          }
+          resolve(data);
+        }
+      );
+    });
+  }
+
+  // remove emp
   rem_emp(emp_id) {
     return new Promise((resolve, reject) => {
       this.connection.query(
-        "Delete employee  WHERE empid = ?",
+        "Delete from employee WHERE empid = ?",
         emp_id,
         function (err, data) {
           if (err) {

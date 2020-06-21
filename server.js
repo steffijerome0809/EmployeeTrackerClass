@@ -76,23 +76,37 @@ const addDepartment = () => {
     });
 };
 
-function view_emp_by_dep() {
+const view_emp_by_dep = async () => {
+  let alldep = [];
   //   select e.first_name as firstname ,e.last_name as lastname from employee e ,role r join department d on r.department_id=d.id where d.name="Sales";
+
+  await database.deplist().then(async (response) => {
+    console.log(response.length);
+    for (let i = 0; i < response.length; i++) {
+      alldep.push(response[i]);
+    }
+  });
+
   inquirer
     .prompt({
       type: "list",
       name: "departmentname",
       message: "Which department employees do you want to view ?",
-      choices: ["Management", "Legal", "Sales", "Engineering", "Finance"],
+      choices: alldep,
     })
     .then(async (answers) => {
-      await database.viewEmpByDep(answers.departmentname).then((response) => {
+      let depparseName = {};
+      depparseName.name = answers.departmentname.split(" ")[1];
+
+      // console.log(depparseName.name);
+
+      await database.viewEmpByDep(depparseName.name).then((response) => {
         console.table(response);
       });
 
       startQue();
     });
-}
+};
 
 function view_emp_by_manager() {
   inquirer
@@ -253,102 +267,81 @@ const addEmployee = () => {
     });
 };
 
-// function upd_emp_manager() {
-//   let allemp = [];
-//   connection.query("SELECT * FROM employee", function (err, answer) {
-//     for (let i = 0; i < answer.length; i++) {
-//       let employeeString =
-//         answer[i].empid +
-//         " " +
-//         answer[i].first_name +
-//         " " +
-//         answer[i].last_name;
-//       allemp.push(employeeString);
-//     }
-//     // console.log(allemp)
+const upd_emp_manager = async () => {
+  let allemp = [];
 
-//     inquirer
-//       .prompt([
-//         {
-//           type: "list",
-//           name: "updateempManager",
-//           message: "select employee to update manager",
-//           choices: allemp,
-//         },
-//         {
-//           type: "list",
-//           message: "select new manager",
-//           choices: allemp,
-//           name: "newManager",
-//         },
-//       ])
-//       .then(function (answers) {
-//         console.log("about to update", answers);
-//         const idToUpdate = {};
-//         idToUpdate.employeeId = parseInt(
-//           answers.updateempManager.split(" ")[0]
-//         );
-//         //console.log(idToUpdate.employeeId);
+  await database.emplist().then(async (response) => {
+    console.log(response.length);
+    for (let i = 0; i < response.length; i++) {
+      allemp.push(response[i]);
+    }
+  });
+  // console.log(allemp)
 
-//         idToUpdate.managerId = parseInt(answers.newManager.split(" ")[0]);
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "updateempManager",
+        message: "select employee to update manager",
+        choices: allemp,
+      },
+      {
+        type: "list",
+        message: "select new manager",
+        choices: allemp,
+        name: "newManager",
+      },
+    ])
+    .then(async (answers) => {
+      console.log("about to update", answers);
+      const idToUpdate = {};
+      idToUpdate.employeeId = parseInt(answers.updateempManager.split(" ")[0]);
+      //console.log(idToUpdate.employeeId);
 
-//         //console.log(idToUpdate.managerId);
+      idToUpdate.managerId = parseInt(answers.newManager.split(" ")[0]);
 
-//         connection.query(
-//           "UPDATE employee SET manager_id= ? WHERE empid = ?",
-//           [idToUpdate.managerId, idToUpdate.employeeId],
-//           function (err, result) {
-//             if (err) throw err;
-//             console.table(result);
-//           }
-//         );
-//         startQue();
-//       });
-//   });
-// }
+      await database
+        .upd_manager(idToUpdate.employeeId, idToUpdate.managerId)
+        .then((response) => {
+          console.table(response);
+        });
 
-// function remove_emp() {
-//   let allemp = [];
+      startQue();
+    });
+};
 
-//   connection.query("SELECT * FROM employee", function (err, answer) {
-//     for (let i = 0; i < answer.length; i++) {
-//       let employeeString =
-//         answer[i].empid +
-//         " " +
-//         answer[i].first_name +
-//         " " +
-//         answer[i].last_name;
-//       allemp.push(employeeString);
-//     }
-//     // console.log(allemp)
+const remove_emp = async () => {
+  let allemp = [];
 
-//     inquirer
-//       .prompt([
-//         {
-//           type: "list",
-//           name: "removeEmp",
-//           message: "select employee that you want to remove ",
-//           choices: allemp,
-//         },
-//       ])
-//       .then(function (answers) {
-//         console.log("about to delete", answers);
-//         const idToRemove = {};
-//         idToRemove.employeeId = parseInt(answers.removeEmp.split(" ")[0]);
-//         console.log(idToRemove.employeeId);
+  await database.emplist().then(async (response) => {
+    console.log(response.length);
+    for (let i = 0; i < response.length; i++) {
+      allemp.push(response[i]);
+    }
+  });
 
-//         connection.query(
-//           "DELETE FROM employee  WHERE empid = ?",
-//           [idToRemove.employeeId],
-//           function (err, result) {
-//             if (err) throw err;
-//             console.table(result);
-//           }
-//         );
-//         startQue();
-//       });
-//   });
-// }
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "removeEmp",
+        message: "select employee that you want to remove ",
+        choices: allemp,
+      },
+    ])
+    .then(async (answers) => {
+      console.log("about to delete", answers);
+      const idToRemove = {};
+      idToRemove.employeeId = parseInt(answers.removeEmp.split(" ")[0]);
+      console.log(idToRemove.employeeId);
+
+      await database.rem_emp(idToRemove.employeeId).then((response) => {
+        console.table(response);
+      });
+      startQue();
+    });
+};
 
 // start function call
 startQue();

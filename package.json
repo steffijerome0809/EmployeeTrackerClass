@@ -1,24 +1,24 @@
 {
-  "name": "EmployeeTracker",
+  "name": "EmployeeTrackerClass",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/steffijerome0809/EmployeeTracker.git"
+    "url": "git+https://github.com/steffijerome0809/EmployeeTrackerClass.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/steffijerome0809/EmployeeTracker/issues"
+    "url": "https://github.com/steffijerome0809/EmployeeTrackerClass/issues"
   },
-  "homepage": "https://github.com/steffijerome0809/EmployeeTracker#readme",
+  "homepage": "https://github.com/steffijerome0809/EmployeeTrackerClass#readme",
   "dependencies": {
-    "console.table": "^0.10.0",
     "dotenv": "^8.2.0",
     "inquirer": "^7.2.0",
     "mysql": "^2.18.1"
