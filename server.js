@@ -22,10 +22,10 @@ const startQue = () => {
         "update employee manager",
         "remove employee",
         "total_salary_of_department",
+        "exit",
       ],
     })
     .then((answers) => {
-      console.log("check +", answers);
       // start of switch statements
 
       switch (answers.questions) {
@@ -58,6 +58,9 @@ const startQue = () => {
           break;
         case "total_salary_of_department":
           total_salary_dep();
+          break;
+        case "exit":
+          console.log("Goodbye!");
           break;
       }
     });
