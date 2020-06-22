@@ -170,7 +170,7 @@ class DB {
     var query =
       "select em.first_name as firstname ,em.last_name as lastname,r.title,r.salary,d.name,";
     query +=
-      'concat(e.first_name," ",e.last_name) as manager from employee e join employee em on e.empid=em.manager_id';
+      'concat(e.first_name," ",e.last_name) as manager from employee e right join employee em on e.empid=em.manager_id';
     query +=
       " join role r on r.roleid=em.role_id join department d on d.id=r.department_id";
     //console.log(query);

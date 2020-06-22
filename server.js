@@ -1,8 +1,5 @@
 const inquirer = require("inquirer");
 const DB = require("./db/db");
-// const connection = require("./db/db.js");
-// const mysql = require("mysql");
-
 const database = new DB();
 
 const startQue = () => {
@@ -86,7 +83,7 @@ const addDepartment = () => {
 const total_salary_dep = async () => {
   let alldep = [];
 
-  await database.deplist().then(async (response) => {
+  await database.deplist().then((response) => {
     console.log(response.length);
     for (let i = 0; i < response.length; i++) {
       alldep.push(response[i]);
@@ -234,13 +231,31 @@ const upd_emp_role = async () => {
     });
 };
 
-function addRole() {
+const addRole = async () => {
+  let alldep = [];
+
+  await database.deplist().then(async (response) => {
+    for (let i = 0; i < response.length; i++) {
+      alldep.push(response[i]);
+    }
+  });
+
   inquirer
     .prompt([
       {
-        type: "input",
+        type: "list",
         name: "title",
-        message: "Enter employee title",
+        message: "What is the title",
+        choices: [
+          "Sales Lead",
+          "Sales person",
+          "Lawyer",
+          "Lead Engineer",
+          "Software Engineer",
+          "Account Manager",
+          "Legal Team Lead",
+          "HR",
+        ],
       },
       {
         type: "input",
@@ -248,20 +263,23 @@ function addRole() {
         message: "Enter employee salary",
       },
       {
-        type: "input",
-        name: "department_id",
-        message: "Enter employee department id",
+        type: "list",
+        name: "departmentname",
+        message: "Enter employee department",
+        choices: alldep,
       },
     ])
     .then(async (answers) => {
+      let depparseNameId = {};
+      depparseNameId.id = answers.departmentname.split(" ")[0];
       await database
-        .addrole(answers.title, answers.salary, answers.department_id)
+        .addrole(answers.title, answers.salary, depparseNameId.id)
         .then((response) => {
           console.table(response);
         });
       startQue();
     });
-}
+};
 const addEmployee = () => {
   inquirer
     .prompt([
